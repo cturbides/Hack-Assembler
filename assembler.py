@@ -68,9 +68,14 @@ def assemble(input_file, output_file=None):
             symbol = parser.symbol()
             
             # Check if it's a number or a symbol
-            if symbol.isdigit():
+            # Note: Hack assembly uses positive integers only for A-instructions
+            try:
                 address = int(symbol)
-            else:
+                if address < 0:
+                    raise ValueError(f"A-instruction addresses must be non-negative: @{symbol}")
+            except ValueError as e:
+                if "invalid literal" not in str(e):
+                    raise
                 # It's a symbol
                 if not symbol_table.contains(symbol):
                     # New variable

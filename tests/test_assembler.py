@@ -8,6 +8,7 @@ or: python test_assembler.py
 import unittest
 import os
 import sys
+import tempfile
 from pathlib import Path
 
 # Add parent directory to path to import modules
@@ -25,8 +26,8 @@ class TestParser(unittest.TestCase):
     def test_a_command(self):
         """Test parsing of A-commands."""
         # Create a temporary test file
-        test_file = '/tmp/test_a.asm'
-        with open(test_file, 'w') as f:
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.asm', delete=False) as f:
+            test_file = f.name
             f.write('@100\n')
             f.write('@sum\n')
         
@@ -46,8 +47,8 @@ class TestParser(unittest.TestCase):
     
     def test_c_command(self):
         """Test parsing of C-commands."""
-        test_file = '/tmp/test_c.asm'
-        with open(test_file, 'w') as f:
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.asm', delete=False) as f:
+            test_file = f.name
             f.write('D=A\n')
             f.write('D;JGT\n')
             f.write('MD=D+1\n')
@@ -87,8 +88,8 @@ class TestParser(unittest.TestCase):
     
     def test_l_command(self):
         """Test parsing of L-commands (labels)."""
-        test_file = '/tmp/test_l.asm'
-        with open(test_file, 'w') as f:
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.asm', delete=False) as f:
+            test_file = f.name
             f.write('(LOOP)\n')
             f.write('(END)\n')
         
@@ -108,8 +109,8 @@ class TestParser(unittest.TestCase):
     
     def test_comments_and_whitespace(self):
         """Test that comments and whitespace are properly handled."""
-        test_file = '/tmp/test_comments.asm'
-        with open(test_file, 'w') as f:
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.asm', delete=False) as f:
+            test_file = f.name
             f.write('// This is a comment\n')
             f.write('   \n')
             f.write('@100  // inline comment\n')
@@ -208,7 +209,6 @@ class TestAssembler(unittest.TestCase):
     
     def test_add_program(self):
         """Test assembling the Add.asm program."""
-        test_file = '/tmp/test_add.asm'
         expected_output = [
             '0000000000000010',  # @2
             '1110110000010000',  # D=A
@@ -218,7 +218,8 @@ class TestAssembler(unittest.TestCase):
             '1110001100001000',  # M=D
         ]
         
-        with open(test_file, 'w') as f:
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.asm', delete=False) as f:
+            test_file = f.name
             f.write('@2\n')
             f.write('D=A\n')
             f.write('@3\n')
@@ -235,9 +236,8 @@ class TestAssembler(unittest.TestCase):
     
     def test_labels(self):
         """Test assembling a program with labels."""
-        test_file = '/tmp/test_labels.asm'
-        
-        with open(test_file, 'w') as f:
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.asm', delete=False) as f:
+            test_file = f.name
             f.write('@R0\n')
             f.write('D=M\n')
             f.write('@STOP\n')
@@ -259,9 +259,8 @@ class TestAssembler(unittest.TestCase):
     
     def test_variables(self):
         """Test assembling a program with variables."""
-        test_file = '/tmp/test_vars.asm'
-        
-        with open(test_file, 'w') as f:
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.asm', delete=False) as f:
+            test_file = f.name
             f.write('@sum\n')
             f.write('M=0\n')
             f.write('@counter\n')
