@@ -3,6 +3,9 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Hack assembler output files
+*.hack
+
 # C extensions
 *.so
 
